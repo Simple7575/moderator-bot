@@ -44,5 +44,6 @@ if (process.env.MODE === "Dev") {
 } else {
     const WEB_URI = process.env.WEB_URI;
     if (!WEB_URI) throw new Error("Web URI needed");
+    console.log(`${WEB_URI}/bot${Token}`);
     bot.api.setWebhook(`${WEB_URI}/bot${Token}`);
 }
