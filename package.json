@@ -8,6 +8,7 @@
         "start": "node ./dist/index.js",
         "rimraf": "./node_modules/rimraf/bin.js",
         "build": "rimraf ./dist && tsc",
+        "render:build": "tsc",
         "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
         "tsc": "tsc",
         "watch:tsc": "tsc -W",
