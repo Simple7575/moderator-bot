@@ -1,49 +1,29 @@
-import { Bot, session } from "grammy";
-import { conversations } from "@grammyjs/conversations";
-import profanity from "leo-profanity";
-import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
 //
-import { start } from "./handlers/start.js";
-// types
-import { type ContextType, type ApiType } from "../types/context";
+import { bot } from "./bot/bot.js";
+import { BOT_TOKEN, PORT, WEB_URI, MODE } from "./constants.js";
+import botRouter from "./bot/route.js";
 
-dotenv.config();
+const app = express();
 
-const Token = process.env.BOT_TOKEN;
-if (!Token) throw new Error("Bot Token needed.");
-const bot = new Bot<ContextType, ApiType>(Token);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: "*" }));
+app.use(helmet());
 
-bot.use(
-    session({
-        initial() {
-            return {};
-        },
-        getSessionKey(ctx) {
-            return ctx.from?.id.toString();
-        },
-    })
-);
-bot.use(conversations());
+app.use("/bot", botRouter);
 
-bot.command("start", start);
-bot.on("message", async (ctx) => {
-    try {
-        if (profanity.check(ctx.message.text!)) {
-            const cleand = profanity.clean(ctx.message.text!);
-
-            await ctx.deleteMessage();
-            ctx.reply(`${ctx.from.first_name} says \n"${cleand}"`);
-        }
-    } catch (error) {
-        console.log(error);
+app.listen(PORT, async () => {
+    console.log(`Listening on port ${PORT}`);
+    if (MODE === "Dev") {
+        bot.start();
+    } else {
+        if (!BOT_TOKEN) throw new Error("Bot Token needed.");
+        if (!WEB_URI) throw new Error("Web URI needed");
+        await bot.api.setWebhook(`${WEB_URI || "http://localhost:5000"}/bot/bot${BOT_TOKEN}`, {
+            drop_pending_updates: true,
+        });
     }
 });
-
-if (process.env.MODE === "Dev") {
-    bot.start();
-} else {
-    const WEB_URI = process.env.WEB_URI;
-    if (!WEB_URI) throw new Error("Web URI needed");
-    console.log(`${WEB_URI}/bot${Token}`);
-    bot.api.setWebhook(`${WEB_URI}/bot${Token}`);
-}
