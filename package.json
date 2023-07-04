@@ -2,7 +2,7 @@
     "name": "moderator-bot",
     "version": "1.0.0",
     "description": "moderate chat",
-    "main": "index.js",
+    "main": "./dst/index.js",
     "type": "module",
     "scripts": {
         "start": "node ./dist/index.js",

@@ -39,4 +39,10 @@ bot.on("message", async (ctx) => {
     }
 });
 
-bot.start();
+if (process.env.MODE === "Dev") {
+    bot.start();
+} else {
+    const WEB_URI = process.env.WEB_URI;
+    if (!WEB_URI) throw new Error("Web URI needed");
+    bot.api.setWebhook(`${WEB_URI}/bot${Token}`);
+}
