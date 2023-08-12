@@ -1,6 +1,6 @@
 import profanity from "leo-profanity";
 // types
-import { ContextType } from "../../types/context";
+import { ContextType } from "../types/context";
 
 export const cleanLanguage = async (ctx: ContextType) => {
     const message = ctx.message!;

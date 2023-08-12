@@ -6,7 +6,7 @@ import { cleanLanguage } from "../handlers/cleanLanguage.js";
 //
 import { BOT_TOKEN } from "../constants.js";
 // types
-import { type ContextType, type ApiType } from "../../types/context";
+import { type ContextType, type ApiType } from "../types/context";
 
 if (!BOT_TOKEN) throw new Error("Bot Token needed.");
 const bot = new Bot<ContextType, ApiType>(BOT_TOKEN);
